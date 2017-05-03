@@ -46,6 +46,9 @@ final class HdmiCecLocalDevicePlayback extends HdmiCecLocalDevice {
     private static final boolean WAKE_ON_HOTPLUG =
             SystemProperties.getBoolean(Constants.PROPERTY_WAKE_ON_HOTPLUG, true);
 
+    private static final boolean SWITCH_TV_INPUT =
+            SystemProperties.getBoolean(Constants.PROPERTY_SWITCH_TV_INPUT, true);
+
     private static final boolean SET_MENU_LANGUAGE =
             SystemProperties.getBoolean(Constants.PROPERTY_SET_MENU_LANGUAGE, false);
 
@@ -81,6 +84,12 @@ final class HdmiCecLocalDevicePlayback extends HdmiCecLocalDevice {
         mService.sendCecCommand(HdmiCecMessageBuilder.buildDeviceVendorIdCommand(
                 mAddress, mService.getVendorId()));
         startQueuedActions();
+
+        // Switch TV input after bootup.
+        if (SWITCH_TV_INPUT){
+            setActiveSource(true);
+            maySendActiveSource(Constants.ADDR_TV);
+        }
     }
 
     @Override

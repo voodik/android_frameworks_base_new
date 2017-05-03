@@ -55,6 +55,7 @@ abstract class HdmiCecLocalDevice {
     protected final HdmiControlService mService;
     protected final int mDeviceType;
     protected int mAddress;
+    protected int mDeviceVendorId = 0;
     protected int mPreferredAddress;
     protected HdmiDeviceInfo mDeviceInfo;
     protected int mLastKeycode = HdmiCecKeycode.UNSUPPORTED_KEYCODE;
@@ -234,9 +235,13 @@ abstract class HdmiCecLocalDevice {
     @ServiceThreadOnly
     protected final boolean onMessage(HdmiCecMessage message) {
         assertRunOnServiceThread();
+
+        Slog.w(TAG, "MNG onMessage :" + message.toString());
+
         if (dispatchMessageToAction(message)) {
             return true;
         }
+        Slog.w(TAG, "MNG1 onMessage :" + message.toString() + " mAddress = " + mAddress);
         switch (message.getOpcode()) {
             case Constants.MESSAGE_ACTIVE_SOURCE:
                 return handleActiveSource(message);
@@ -272,8 +277,10 @@ abstract class HdmiCecLocalDevice {
                 return handleSystemAudioModeStatus(message);
             case Constants.MESSAGE_REPORT_AUDIO_STATUS:
                 return handleReportAudioStatus(message);
+/*
             case Constants.MESSAGE_STANDBY:
                 return handleStandby(message);
+*/
             case Constants.MESSAGE_TEXT_VIEW_ON:
                 return handleTextViewOn(message);
             case Constants.MESSAGE_IMAGE_VIEW_ON:
@@ -290,6 +297,10 @@ abstract class HdmiCecLocalDevice {
                 return handleMenuRequest(message);
             case Constants.MESSAGE_MENU_STATUS:
                 return handleMenuStatus(message);
+            case Constants.MESSAGE_DEVICE_VENDOR_ID:
+                return handleDevVendorId(message);
+            case Constants.MESSAGE_GIVE_DECK_STATUS:
+                return HandleGiveDeckStatus(message);
             case Constants.MESSAGE_VENDOR_COMMAND:
                 return handleVendorCommand(message);
             case Constants.MESSAGE_VENDOR_COMMAND_WITH_ID:
@@ -449,6 +460,8 @@ abstract class HdmiCecLocalDevice {
     protected boolean handleUserControlPressed(HdmiCecMessage message) {
         assertRunOnServiceThread();
         mHandler.removeMessages(MSG_USER_CONTROL_RELEASE_TIMEOUT);
+
+/*
         if (mService.isPowerOnOrTransient() && isPowerOffOrToggleCommand(message)) {
             mService.standby();
             return true;
@@ -456,7 +469,7 @@ abstract class HdmiCecLocalDevice {
             mService.wakeUp();
             return true;
         }
-
+*/
         final long downTime = SystemClock.uptimeMillis();
         final byte[] params = message.getParams();
         final int keycode = HdmiCecKeycode.cecKeycodeAndParamsToAndroidKey(params);
@@ -548,14 +561,78 @@ abstract class HdmiCecLocalDevice {
         return false;
     }
 
+
+    protected boolean handleDevVendorId(HdmiCecMessage message) {
+        int src = message.getSource();
+        if (src != mAddress && src == Constants.ADDR_TV && message.getDestination() == Constants.ADDR_BROADCAST) {
+        byte[] params = message.getParams();
+        int vendorId = HdmiUtils.threeBytesToInt(params);
+        Slog.v(TAG, "MNG3 Connected device  = " + vendorId);
+            if (vendorId > 0){
+            mDeviceVendorId = vendorId;
+            return true;
+            }
+	}
+        return false;
+    }
+
+
     protected boolean handleVendorCommand(HdmiCecMessage message) {
-        if (!mService.invokeVendorCommandListenersOnReceived(mDeviceType, message.getSource(),
+        Slog.v(TAG, "MNG3 Received CEC vendor comand vid = " + mDeviceVendorId + " src = " + message.getSource() + " dst = " + message.getDestination());
+        byte[] params = message.getParams();
+
+        if (mDeviceVendorId == 57489 && message.getSource() == Constants.ADDR_TV && message.getDestination() == mAddress){
+            byte[] ackparams = new byte[2];
+            switch (params[0]) {
+                 case 0x01:
+                     ackparams[0] = (byte) 0x02;
+                     ackparams[1] = (byte) 0x05;
+                     mService.sendCecCommand(HdmiCecMessageBuilder.buildVendorCommand(
+                     mAddress, message.getSource(), ackparams));
+                     return true;
+                 case 0x04:
+                     ackparams[0] = (byte) 0x05;
+                     ackparams[1] = (byte) 0x01;
+                     mService.sendCecCommand(HdmiCecMessageBuilder.buildVendorCommand(
+                     mAddress, message.getSource(), ackparams));
+                     return true;
+                 default:
+                     break;
+            }
+        return true;
+
+        } else if (!mService.invokeVendorCommandListenersOnReceived(mDeviceType, message.getSource(),
                 message.getDestination(), message.getParams(), false)) {
             // Vendor command listener may not have been registered yet. Respond with
             // <Feature Abort> [NOT_IN_CORRECT_MODE] so that the sender can try again later.
             mService.maySendFeatureAbortCommand(message, Constants.ABORT_NOT_IN_CORRECT_MODE);
         }
         return true;
+    }
+
+    protected boolean HandleGiveDeckStatus(HdmiCecMessage message) {
+        Slog.v(TAG, "MNG3 Received CEC HandleGiveDeckStatus comand vid = " + mDeviceVendorId + " src = " + message.getSource() + " dst = " + message.getDestination());
+        byte[] params = message.getParams();
+
+      if (mDeviceVendorId == 57489 && message.getSource() == Constants.ADDR_TV && message.getDestination() == mAddress){
+          byte[] ackparams1 = new byte[1];
+            switch (params[0]) {
+                 case 0x01:
+                     ackparams1[0] = (byte) 0x20;
+                     mService.sendCecCommand(HdmiCecMessageBuilder.buildDeckStatusCommand(
+                     mAddress, message.getSource(), ackparams1));
+                     return true;
+                 case 0x03:
+                     ackparams1[0] = (byte) 0x20;
+                     mService.sendCecCommand(HdmiCecMessageBuilder.buildDeckStatusCommand(
+                     mAddress, message.getSource(), ackparams1));
+                     return true;
+                 default:
+                     break;
+            }
+        return false;
+      }
+    return false;
     }
 
     protected boolean handleVendorCommandWithId(HdmiCecMessage message) {
