@@ -1562,6 +1562,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         homeButton.setOnTouchListener(mHomeActionListener);
         homeButton.setOnLongClickListener(mLongPressHomeListener);
 
+        ButtonDispatcher MinusButton = mNavigationBarView.getMinusButton();
+        MinusButton.setLongClickable(false);
+
+        ButtonDispatcher PlusButton = mNavigationBarView.getPlusButton();
+        PlusButton.setLongClickable(false);
+
+        ButtonDispatcher PowerButton = mNavigationBarView.getPowerButton();
+        PowerButton.setLongClickable(true);
+
         mAssistManager.onConfigurationChanged();
     }
 

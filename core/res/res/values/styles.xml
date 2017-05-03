@@ -1364,6 +1364,8 @@ please see styles_device_defaults.xml.
         <item name="pointerIconZoomOut">@drawable/pointer_zoom_out_icon</item>
         <item name="pointerIconGrab">@drawable/pointer_grab_icon</item>
         <item name="pointerIconGrabbing">@drawable/pointer_grabbing_icon</item>
+	<!-- codewalker -->
+        <item name="android:pointerIconZoom">@android:drawable/pointer_zoom_icon</item>
     </style>
 
     <style name="LargePointer">
