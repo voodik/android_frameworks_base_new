@@ -585,7 +585,7 @@ public final class SystemServer {
         Object wigigService = null;
 
         boolean disableStorage = SystemProperties.getBoolean("config.disable_storage", false);
-        boolean disableBluetooth = SystemProperties.getBoolean("config.disable_bluetooth", false);
+        boolean disableBluetooth = SystemProperties.getBoolean("persist.disable_bluetooth", true);
         boolean disableLocation = SystemProperties.getBoolean("config.disable_location", false);
         boolean disableSystemUI = SystemProperties.getBoolean("config.disable_systemui", false);
         boolean disableNonCoreServices = SystemProperties.getBoolean("config.disable_noncore", false);
