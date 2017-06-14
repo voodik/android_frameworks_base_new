@@ -415,7 +415,11 @@ final class LocalDisplayAdapter extends DisplayAdapter {
                     // For demonstration purposes, allow rotation of the external display.
                     // In the future we might allow the user to configure this directly.
                     if ("portrait".equals(SystemProperties.get("persist.demo.hdmirotation"))) {
+			if ((SystemProperties.getInt("ro.sf.hwrotation",0)) == 90){
+                            mInfo.rotation = Surface.ROTATION_90;
+                        } else {
                         mInfo.rotation = Surface.ROTATION_270;
+                        }
                     }
 
                     // For demonstration purposes, allow rotation of the external display
