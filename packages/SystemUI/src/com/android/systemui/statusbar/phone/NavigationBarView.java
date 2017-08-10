@@ -88,6 +88,9 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
     private Drawable mDockedIcon;
     private Drawable mImeIcon;
     private Drawable mMenuIcon;
+    private Drawable mMinusIcon;
+    private Drawable mPlusIcon;
+    private Drawable mPowerIcon;
 
     private NavigationBarGestureHelper mGestureHelper;
     private DeadZone mDeadZone;
@@ -209,9 +212,12 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
 
         mBarTransitions = new NavigationBarTransitions(this);
 
+        mButtonDisatchers.put(R.id.minus, new ButtonDispatcher(R.id.minus));
+        mButtonDisatchers.put(R.id.plus, new ButtonDispatcher(R.id.plus));
         mButtonDisatchers.put(R.id.back, new ButtonDispatcher(R.id.back));
         mButtonDisatchers.put(R.id.home, new ButtonDispatcher(R.id.home));
         mButtonDisatchers.put(R.id.recent_apps, new ButtonDispatcher(R.id.recent_apps));
+        mButtonDisatchers.put(R.id.power, new ButtonDispatcher(R.id.power));
         mButtonDisatchers.put(R.id.menu, new ButtonDispatcher(R.id.menu));
         mButtonDisatchers.put(R.id.menu_always_show, new ButtonDispatcher(R.id.menu_always_show));
         mButtonDisatchers.put(R.id.search, new ButtonDispatcher(R.id.search));
@@ -287,6 +293,17 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
         return mButtonDisatchers.get(R.id.ime_switcher);
     }
 
+    public ButtonDispatcher getMinusButton() {
+        return mButtonDisatchers.get(R.id.minus);
+    }
+
+    public ButtonDispatcher getPlusButton() {
+        return mButtonDisatchers.get(R.id.plus);
+    }
+
+    public ButtonDispatcher getPowerButton() {
+        return mButtonDisatchers.get(R.id.power);
+    }
     public ButtonDispatcher getSearchButton() {
         return mButtonDisatchers.get(R.id.search);
     }
@@ -306,11 +323,14 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
             mDockedIcon = ctx.getDrawable(R.drawable.ic_sysbar_docked);
         }
         if (oldConfig.densityDpi != newConfig.densityDpi) {
+            mMinusIcon = ctx.getDrawable(R.drawable.ic_sysbar_minus);
+            mPlusIcon = ctx.getDrawable(R.drawable.ic_sysbar_plus);
             mBackIcon = new BackButtonDrawable(ctx.getDrawable(R.drawable.ic_sysbar_back));
             mBackLandIcon = mBackIcon;
 
             mHomeDefaultIcon = ctx.getDrawable(R.drawable.ic_sysbar_home);
             mRecentIcon = ctx.getDrawable(R.drawable.ic_sysbar_recent);
+            mPowerIcon = ctx.getDrawable(R.drawable.ic_sysbar_power);
             mMenuIcon = ctx.getDrawable(R.drawable.ic_sysbar_menu);
             mImeIcon = ctx.getDrawable(R.drawable.ic_ime_switcher_default);
 
@@ -397,6 +417,7 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
         mDisabledFlags = disabledFlags;
 
         final boolean disableHome = ((disabledFlags & View.STATUS_BAR_DISABLE_HOME) != 0);
+		final boolean disableother = false;
 
         // Always disable recents when alternate car mode UI is active.
         boolean disableRecent = mUseCarModeUi
@@ -423,6 +444,9 @@ public class NavigationBarView extends LinearLayout implements TunerService.Tuna
         getBackButton().setVisibility(disableBack      ? View.INVISIBLE : View.VISIBLE);
         getHomeButton().setVisibility(disableHome      ? View.INVISIBLE : View.VISIBLE);
         getRecentsButton().setVisibility(disableRecent ? View.INVISIBLE : View.VISIBLE);
+        getMinusButton().setVisibility(disableother ? View.INVISIBLE : View.VISIBLE);
+        getPlusButton().setVisibility(disableother ? View.INVISIBLE : View.VISIBLE);
+        getPowerButton().setVisibility(disableother ? View.INVISIBLE : View.VISIBLE);
         getSearchButton().setVisibility(disableSearch ? View.INVISIBLE : View.VISIBLE);
     }
 

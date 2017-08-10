@@ -7879,6 +7879,9 @@ i
         <attr name="pointerIconGrab" format="reference"/>
         <!-- Reference to a pointer drawable with STYLE_GRABBING -->
         <attr name="pointerIconGrabbing" format="reference"/>
+	<!-- codewalker -->
+	<!-- Reference to a pointer icon drawable with STYLE_ZOOM -->
+        <attr name="pointerIconZoom" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="PointerIcon">

@@ -68,6 +68,10 @@ public final class PointerIcon implements Parcelable {
     /** {@hide} Type constant: Spot anchor icon for touchpads. */
     public static final int TYPE_SPOT_ANCHOR = 2002;
 
+	//codewalker
+    /** {@hide} Style constant: Spot anchor icon for touchpads. */
+    public static final int STYLE_ZOOM = 2004;
+
     // Type constants for additional predefined icons for mice.
     /** Type constant: context-menu. */
     public static final int TYPE_CONTEXT_MENU = 1001;
@@ -179,6 +183,21 @@ public final class PointerIcon implements Parcelable {
     public static PointerIcon getDefaultIcon(@NonNull Context context) {
         return getSystemIcon(context, TYPE_DEFAULT);
     }
+
+	//codewalker
+    /**
+     * Gets the default pointer icon.
+     *
+     * @param context The context.
+     * @return The default pointer icon.
+     *
+     * @throws IllegalArgumentException if context is null.
+     * @hide
+     */
+    public static PointerIcon getZoomIcon(@NonNull Context context) {
+        return getSystemIcon(context, STYLE_ZOOM);
+    }
+
 
     /**
      * Gets a system pointer icon for the given type.
@@ -520,6 +539,8 @@ public final class PointerIcon implements Parcelable {
             case TYPE_TOP_LEFT_DIAGONAL_DOUBLE_ARROW:
                 return com.android.internal.R.styleable.
                         Pointer_pointerIconTopLeftDiagonalDoubleArrow;
+            case STYLE_ZOOM:
+                return com.android.internal.R.styleable.Pointer_pointerIconZoom;
             case TYPE_ZOOM_IN:
                 return com.android.internal.R.styleable.Pointer_pointerIconZoomIn;
             case TYPE_ZOOM_OUT:

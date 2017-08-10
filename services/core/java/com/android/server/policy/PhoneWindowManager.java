@@ -586,6 +586,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mVolumeDownWakeTriggered;
     boolean mVolumeUpWakeTriggered;
     boolean mVolumeMuteWakeTriggered;
+    boolean mPwbtnForceShutdownprop;
 
     int mPointerLocationMode = 0; // guarded by mLock
 
@@ -1615,6 +1616,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 performAuditoryFeedbackForAccessibilityIfNeed();
             }
             showGlobalActionsInternal();
+            if (mPwbtnForceShutdownprop){
+            mLongPressOnPowerBehavior = LONG_PRESS_POWER_SHUT_OFF_NO_CONFIRM;
+            }
             break;
         case LONG_PRESS_POWER_SHUT_OFF:
         case LONG_PRESS_POWER_SHUT_OFF_NO_CONFIRM:
@@ -2024,6 +2028,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mPowerKeyWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "PhoneWindowManager.mPowerKeyWakeLock");
         mEnableShiftMenuBugReports = "1".equals(SystemProperties.get("ro.debuggable"));
+        mPwbtnForceShutdownprop = SystemProperties.getBoolean("persist.pwbtn.shutdown", false);
         mSupportAutoRotation = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_supportAutoRotation);
         mLidOpenRotation = readRotation(
@@ -2078,8 +2083,15 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         mShortPressOnPowerBehavior = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_shortPressOnPowerBehavior);
+
+        if (mPwbtnForceShutdownprop){
+        mLongPressOnPowerBehavior = LONG_PRESS_POWER_SHUT_OFF_NO_CONFIRM;
+		Slog.i(TAG, "MNG mPwbtnForceShutdownprop");
+        } else {
+
         mLongPressOnPowerBehavior = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_longPressOnPowerBehavior);
+        }
         mDoublePressOnPowerBehavior = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_doublePressOnPowerBehavior);
         mTriplePressOnPowerBehavior = mContext.getResources().getInteger(
@@ -6782,6 +6794,10 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
                 break;
             }
+
+            case KeyEvent.KEYCODE_F12: {
+			showGlobalActions();
+			}
 
             case KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN:
                 // fall through

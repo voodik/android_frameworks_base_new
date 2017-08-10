@@ -51,6 +51,8 @@ import com.android.systemui.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.MINUS;
+import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.PLUS;
 import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.BACK;
 import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.BUTTON_SEPARATOR;
 import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.CLIPBOARD;
@@ -65,6 +67,7 @@ import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.MEN
 import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.NAVSPACE;
 import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.NAV_BAR_VIEWS;
 import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.RECENT;
+import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.POWER;
 import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.SEARCH;
 import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.SIZE_MOD_END;
 import static com.android.systemui.statusbar.phone.NavigationBarInflaterView.SIZE_MOD_START;
@@ -216,6 +219,12 @@ public class NavBarTuner extends Fragment implements TunerService.Tunable {
             return context.getString(R.string.accessibility_back);
         } else if (button.startsWith(RECENT)) {
             return context.getString(R.string.accessibility_recent);
+        } else if (button.startsWith(MINUS)) {
+            return context.getString(R.string.accessibility_minus);
+        } else if (button.startsWith(PLUS)) {
+            return context.getString(R.string.accessibility_plus);
+        } else if (button.startsWith(POWER)) {
+            return context.getString(R.string.accessibility_power);
         } else if (button.startsWith(NAVSPACE)) {
             return context.getString(R.string.space);
         } else if (button.equals(MENU_IME)) {

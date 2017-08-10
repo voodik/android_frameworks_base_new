@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.util.SparseArray;
+import android.view.KeyEvent;
 import android.view.Display;
 import android.view.Display.Mode;
 import android.view.LayoutInflater;
@@ -46,6 +47,9 @@ public class NavigationBarInflaterView extends FrameLayout implements TunerServi
     public static final String BACK = "back";
     public static final String HOME = "home";
     public static final String RECENT = "recent";
+    public static final String MINUS = "minus";
+    public static final String PLUS = "plus";
+    public static final String POWER = "power";
     public static final String SEARCH = "search";
     public static final String NAVSPACE = "space";
     public static final String CLIPBOARD = "clipboard";
@@ -256,6 +260,15 @@ public class NavigationBarInflaterView extends FrameLayout implements TunerServi
             v = inflater.inflate(R.layout.back, parent, false);
         } else if (RECENT.equals(button)) {
             v = inflater.inflate(R.layout.recent_apps, parent, false);
+        } else if (MINUS.equals(button)) {
+            v = inflater.inflate(R.layout.minus, parent, false);
+			((KeyButtonView) v).setCode(KeyEvent.KEYCODE_VOLUME_DOWN);
+	    } else if (PLUS.equals(button)) {
+            v = inflater.inflate(R.layout.plus, parent, false);
+			((KeyButtonView) v).setCode(KeyEvent.KEYCODE_VOLUME_UP);
+	    } else if (POWER.equals(button)) {
+            v = inflater.inflate(R.layout.power, parent, false);
+			((KeyButtonView) v).setCode(KeyEvent.KEYCODE_F12);
         } else if (MENU_IME.equals(button)) {
             v = inflater.inflate(R.layout.menu_ime, parent, false);
         } else if (MENU_IME_ALWAYS_SHOW.equals(button)) {

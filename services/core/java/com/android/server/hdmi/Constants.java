@@ -218,6 +218,8 @@ final class Constants {
     //            True by default.
     static final String PROPERTY_WAKE_ON_HOTPLUG = "ro.hdmi.wake_on_hotplug";
 
+    static final String PROPERTY_SWITCH_TV_INPUT = "persist.hdmi.switch_tv_input";
+
     // TODO(OEM): Set this to true to enable 'Set Menu Language' feature. False by default.
     static final String PROPERTY_SET_MENU_LANGUAGE = "ro.hdmi.set_menu_language";
 
