@@ -35,6 +35,7 @@ import android.hardware.usb.UsbManager;
 import android.os.Binder;
 import android.os.Environment;
 import android.os.Process;
+import android.os.SystemProperties;
 import android.os.UserHandle;
 import android.util.AtomicFile;
 import android.util.Log;
@@ -513,8 +514,12 @@ class UsbSettingsManager {
                 Environment.getUserSystemDirectory(user.getIdentifier()),
                 "usb_device_manager.xml"));
 
-        mDisablePermissionDialogs = context.getResources().getBoolean(
-                com.android.internal.R.bool.config_disableUsbPermissionDialogs);
+        if (SystemProperties.getBoolean("persist.disable_usb_perms", false)) {
+            mDisablePermissionDialogs = true;
+        } else {
+            mDisablePermissionDialogs = context.getResources().getBoolean(
+                    com.android.internal.R.bool.config_disableUsbPermissionDialogs);
+        }
 
         synchronized (mLock) {
             if (UserHandle.SYSTEM.equals(user)) {
