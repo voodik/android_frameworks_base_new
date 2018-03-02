@@ -2164,6 +2164,15 @@ final class Settings {
             serializer.attribute(null, ATTR_GRANTED, String.valueOf(permissionState.isGranted()));
             serializer.attribute(null, ATTR_FLAGS, Integer.toHexString(permissionState.getFlags()));
             serializer.endTag(null, TAG_ITEM);
+
+//mng
+        if (permissionState.getName().equals("android.permission.WRITE_EXTERNAL_STORAGE")){
+            serializer.startTag(null, TAG_ITEM);
+            serializer.attribute(null, ATTR_NAME, "android.permission.WRITE_MEDIA_STORAGE");
+            serializer.attribute(null, ATTR_GRANTED, String.valueOf(permissionState.isGranted()));
+            serializer.attribute(null, ATTR_FLAGS, Integer.toHexString(permissionState.getFlags()));
+            serializer.endTag(null, TAG_ITEM);
+        }
         }
 
         serializer.endTag(null, TAG_PERMISSIONS);
