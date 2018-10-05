@@ -6811,7 +6811,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
 
             case KeyEvent.KEYCODE_F12: {
+                if (down) {
 			showGlobalActions();
+                }
 			}
 
             case KeyEvent.KEYCODE_SYSTEM_NAVIGATION_DOWN:
